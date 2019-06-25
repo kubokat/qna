@@ -10,7 +10,7 @@ RSpec.describe AnswersController, type: :controller do
       let(:req) {post :create, params: {question_id: question, answer: attributes_for(:answer)}}
 
       it 'save new record' do
-        expect {req}.to change(Answer, :count).by(1)
+        expect{req}.to change(question.answers, :count).by(1)
       end
       it 'redirect to show view' do
         expect(req).to redirect_to assigns(:question)
@@ -19,10 +19,10 @@ RSpec.describe AnswersController, type: :controller do
 
     context 'with invalid attributes' do
 
-      let(:req) {post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid)} }
+      let(:req) {post :create, params: {question_id: question, answer: attributes_for(:answer, :invalid)}}
 
       it 'does not save record' do
-        expect { req }.to_not change(Answer, :count)
+        expect {req}.to_not change(Answer, :count)
       end
       it 're-render new view' do
         expect(req).to render_template :new
@@ -31,7 +31,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #new' do
-    before { get :new, params: {question_id: question} }
+    before {get :new, params: {question_id: question}}
 
     it 'renders show new' do
       expect(response).to render_template(:new)
