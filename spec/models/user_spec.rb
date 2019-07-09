@@ -12,14 +12,13 @@ RSpec.describe User, type: :model do
     let(:author) { create(:user) }
     let(:user) { create(:user) }
     let(:question) { create(:question, user: author) }
-    let!(:answer) { create(:answer, user: author, question: question) }
 
     it 'question belongs to user' do
-      expect(author).to be_author_of(question)
+      expect(question.user_id).to eq(author.id)
     end
 
     it 'question does not belongs to user' do
-      expect(user).to_not be_author_of(question)
+      expect(question.user_id).to_not eq(user.id)
     end
   end
 end

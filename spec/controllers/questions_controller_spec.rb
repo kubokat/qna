@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:user) { create(:user) }
-  let(:user2) { create(:user) }
   let(:question) { create(:question, user: user) }
 
   describe 'GET #index' do
@@ -74,7 +73,7 @@ RSpec.describe QuestionsController, type: :controller do
         expect(response).to redirect_to assigns(:question)
       end
 
-      it 'check valid question user relation' do
+      it 'check question user relation' do
         post :create, params: { question: attributes_for(:question) }
         expect(assigns(:question).user_id).to eq user.id
       end
@@ -128,34 +127,23 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    before { login(user) }
     let!(:question) { create(:question, user: user) }
+    let(:user2) { create(:user) }
     let(:req) { delete :destroy, params: { id: question} }
 
-
-    context 'author' do
-      before { login(user) }
-
-      it 'deletes the question' do
-        expect { req }.to change(Question, :count).by(-1)
-      end
-
-      it 'redirects to index' do
-        delete :destroy, params: { id: question }
-        expect(response).to redirect_to questions_path
-      end
+    it 'deletes the question with author' do
+      expect { req }.to change(Question, :count).by(-1)
     end
 
-    context 'not author' do
-      before { login(user2) }
+    it 'deletes the question without author' do
+      login(user2)
+      expect { req }.to_not change(Question, :count)
+    end
 
-      it 'deletes the question' do
-        expect { req }.to_not change(Question, :count)
-      end
-
-      it 'redirects to index' do
-        delete :destroy, params: { id: question }
-        expect(response).to redirect_to question_path(question)
-      end
+    it 'redirects to index' do
+      delete :destroy, params: { id: question }
+      expect(response).to redirect_to questions_path
     end
   end
 end

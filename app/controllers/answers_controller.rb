@@ -10,7 +10,7 @@ class AnswersController < ApplicationController
   end
 
   def create
-    @answer = @question.answers.new(answer_params)
+    @answer = @question.answers.new(answer_params.merge(user_id: current_user.id))
     @answer.user = current_user
 
     if @answer.save
@@ -42,6 +42,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body).merge(user_id: current_user.id)
+    params.require(:answer).permit(:body)
   end
 end
