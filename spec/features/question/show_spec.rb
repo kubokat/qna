@@ -10,8 +10,7 @@ feature 'User can view the question and answers to it' do
   scenario 'User can view the question and answers to it' do
     visit question_path(question)
 
-    expect(page).to have_content 'MyString'
-    expect(page).to have_content 'MyText'
+    expect(page).to have_content question.title
     expect(page).to have_content 'Answers list'
 
     question.answers.each { |answer| expect(page).to have_content answer.body }

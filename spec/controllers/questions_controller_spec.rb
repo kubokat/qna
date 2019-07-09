@@ -65,11 +65,17 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'with valid attributes' do
       it 'save new record' do
-        expect { post :create, params: { question: attributes_for(:question, user: user) } }.to change(Question, :count).by(1)
+        expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
       end
+
       it 'redirect to show view' do
-        post :create, params: { question: attributes_for(:question, user: user) }
+        post :create, params: { question: attributes_for(:question) }
         expect(response).to redirect_to assigns(:question)
+      end
+
+      it 'check question user relation' do
+        post :create, params: { question: attributes_for(:question) }
+        expect(assigns(:question).user_id).to eq user.id
       end
     end
 
@@ -123,9 +129,16 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'DELETE #destroy' do
     before { login(user) }
     let!(:question) { create(:question, user: user) }
+    let(:user2) { create(:user) }
+    let(:req) { delete :destroy, params: { id: question} }
 
-    it 'deletes the question' do
-      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+    it 'deletes the question with author' do
+      expect { req }.to change(Question, :count).by(-1)
+    end
+
+    it 'deletes the question without author' do
+      login(user2)
+      expect { req }.to_not change(Question, :count)
     end
 
     it 'redirects to index' do
