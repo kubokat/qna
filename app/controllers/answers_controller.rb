@@ -10,7 +10,7 @@ class AnswersController < ApplicationController
   end
 
   def create
-    @answer = @question.answers.new(answer_params.merge(user_id: current_user.id))
+    @answer = @question.answers.new(answer_params)
     @answer.user = current_user
 
     if @answer.save

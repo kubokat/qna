@@ -51,13 +51,30 @@ RSpec.describe AnswersController, type: :controller do
     let(:req) { delete :destroy, params: { id: answer } }
     let(:user2) { create(:user) }
 
-    it 'delete the answer with author' do
-      expect { req }.to change(Answer, :count).by(-1)
+    context 'author' do
+      before { login(user) }
+
+      it 'delete the answer' do
+        expect { req }.to change(Answer, :count).by(-1)
+      end
+
+      it 'redirect to question' do
+        req
+        expect(response).to redirect_to question_path(question)
+      end
     end
 
-    it 'deletes the question without author' do
-      login(user2)
-      expect { req }.to_not change(Answer, :count)
+    context 'not author' do
+      before { login(user2) }
+
+      it 'deletes the answer' do
+        expect { req }.to_not change(Answer, :count)
+      end
+
+      it 'redirect to question' do
+        req
+        expect(response).to redirect_to question_path(question)
+      end
     end
   end
 end
