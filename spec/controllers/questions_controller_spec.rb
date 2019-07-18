@@ -78,12 +78,6 @@ RSpec.describe QuestionsController, type: :controller do
         post :create, params: { question: attributes_for(:question) }
         expect(assigns(:question).user_id).to eq user.id
       end
-
-      it 'check invalid question user relation' do
-        login(user2)
-        post :create, params: { question: attributes_for(:question) }
-        expect(assigns(:question).user_id).to_not eq user.id
-      end
     end
 
     context 'with invalid attributes' do
