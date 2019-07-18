@@ -1,0 +1,6 @@
+- if answer.persisted?
+  li
+    p = answer.body
+    - if current_user&.author_of?(answer)
+      p = link_to 'Edit', edit_answer_path(answer)
+      p = link_to 'Delete Answer', answer_path(answer), method: :delete, data: { confirm: 'You are sure?' }
