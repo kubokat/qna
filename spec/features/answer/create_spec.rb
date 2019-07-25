@@ -14,15 +14,16 @@ feature 'User can write answer for the question', '
       visit question_path(question)
     end
 
-    scenario 'write an answer' do
+    scenario 'write an answer', js: true do
       fill_in 'Body', with: 'Answer Body Text'
       click_on 'Create Answer'
 
-      expect(page).to have_content 'Your answer succesfully created.'
-      expect(page).to have_content 'Answer Body Text'
+      within '.answers' do
+        expect(page).to have_content 'Answer Body Text'
+      end
     end
 
-    scenario 'write an answer with errors' do
+    scenario 'write an answer with errors', js: true do
       click_on 'Create Answer'
 
       expect(page).to have_content "Body can't be blank"
@@ -35,5 +36,14 @@ feature 'User can write answer for the question', '
     click_on 'Create Answer'
 
     expect(page).to have_content 'You need to sign in or sign up before continuing.'
+  end
+
+  scenario 'Authenticated user creates answer with errors', js: true do
+    sign_in(user)
+    visit question_path(question)
+
+    click_on 'Create Answer'
+
+    expect(page).to have_content "Body can't be blank"
   end
 end
