@@ -1,0 +1,6 @@
+$('.error_question').html('<%= render 'shared/errors', resource: @question %>');
+
+<% if !@question.errors.present? %>
+  $('.question h1').html('<%= @question.title %>');
+  $('.question .content').html('<%= @question.body %>');
+<% end %>
