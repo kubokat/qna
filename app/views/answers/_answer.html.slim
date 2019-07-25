@@ -1,6 +1,20 @@
-- if answer.persisted?
-  li
-    p = answer.body
-    - if current_user&.author_of?(answer)
-      p = link_to 'Edit', edit_answer_path(answer)
-      p = link_to 'Delete Answer', answer_path(answer), method: :delete, data: { confirm: 'You are sure?' }
+div class="answer_#{answer.id}"
+  p = answer.body
+  - if current_user&.author_of?(answer)
+    .btn-toolbar
+      = link_to 'Edit', '#', class: 'edit-answer-link btn btn-primary btn-sm', data: {answer_id: answer.id}
+      = link_to 'Delete', answer_path(answer), class: 'btn btn-primary btn-sm', method: :delete, remote: true
+
+      - if current_user&.author_of?(answer.question) && !answer.best
+          = link_to best_answer_path(answer), class: 'best btn btn-primary btn-sm', method: :patch, remote: true
+            span.glyphicon.glyphicon-chevron-up
+
+    div class="error_answer_#{answer.id}"
+
+    = form_with model: answer, class: 'hidden', html: {id: "edit-answer-#{answer.id}"} do |f|
+      .form-group
+        = f.label :body, 'Your answer'
+        = f.text_area :body, :class => 'form-control'
+      .form-group
+        = f.submit 'Save Answer'
+
